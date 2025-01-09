@@ -1,0 +1,32 @@
+name: .NET CI конвеєр
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Перевірка коду
+      uses: actions/checkout@v3
+
+    - name: Встановлення .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0
+
+    - name: Встановлення залежностей
+      run: dotnet restore
+
+    - name: Побудова рішення
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Виконання тестів
+      run: dotnet test --no-build --configuration Release
+        
