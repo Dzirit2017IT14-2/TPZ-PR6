@@ -72,7 +72,7 @@ namespace TestProject
             Assert.AreEqual(v, 12);
         }
         [TestMethod]
-        [Ignore]
+        //[Ignore]
         public void TestVStaticCalcError()
         {
             // Ініціадізація та налаштуванням
