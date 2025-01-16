@@ -7,26 +7,31 @@ on:
   pull_request:
     branches:
       - master
-  
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out code
+      # 1. Виконуємо checkout коду з репозиторію
+    - name: Checkout code
       uses: actions/checkout@v3
-
+      
+      # 2. Встановлюємо необхідну версію .NET SDK
     - name: Setup .Net
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0
-
+      
+      # 3. Встановлюємо всі залежності проекту
     - name: Install dependences
       run: dotnet restore
-
+      
+      # 4. Збираємо рішення в режимі Release
     - name: Build solution
       run: dotnet build --no-restore --configuration Release
-
+      
+      # 5. Запускаємо тести в режимі Release
     - name: Run tests
       run: dotnet test --no-build --configuration Release
-        
+      
