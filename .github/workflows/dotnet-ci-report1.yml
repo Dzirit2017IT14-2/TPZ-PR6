@@ -1,0 +1,43 @@
+name: .NET CI Pipeline TestReport
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Завантаження репозиторію
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Встановлення .NET SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0
+
+    # 3. Встановлення залежностей
+    - name: Install dependencies
+      run: dotnet restore
+
+    # 4. Побудова всіх проєктів у рішенні
+    - name: Build solution
+      run: dotnet build --no-restore --configuration Release
+
+    # 5. Запуск тестів з генерацією звіту
+    - name: Run tests and save results
+      run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test_results.trx"
+
+    # 6. Завантаження звіту як артефакт
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestResults
+        path: TestProject/TestResults/*.trx
