@@ -1,0 +1,71 @@
+name: .NET CI Pipeline TestReport and CodeAnalize
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Завантаження репозиторію
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Встановлення .NET SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0
+
+    # 3. Встановлення залежностей
+    - name: Install dependencies
+      run: dotnet restore
+
+    # 4. Встановлення coverlet.collector
+    - name: Install coverlet.collector
+      run: dotnet add TestProject/TestProject.csproj package coverlet.collector
+
+    # 5. Побудова всіх проєктів у рішенні
+    - name: Build solution
+      run: dotnet build --no-restore --configuration Release
+
+    # 6. Запуск тестів із збором покриття
+    - name: Run tests and collect coverage
+      run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage" --logger:trx --results-directory TestProject/TestResults
+
+    # 7. Діагностика: перевірка створених файлів
+    - name: List .trx files
+      run: find TestProject/TestResults -name "*.trx"
+
+    # 8. Встановлення ReportGenerator
+    - name: Install ReportGenerator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+    # 9. Генерація HTML-звіту покриття
+    - name: Generate HTML coverage report
+      run: |
+        export PATH="$PATH:/home/runner/.dotnet/tools"
+        reportgenerator -reports:TestProject/TestResults/**/coverage.cobertura.xml -targetdir:TestProject/TestResults/Report -reporttypes:Html
+
+    # 10. Завантаження звітів як артефактів
+    - name: Upload coverage and test reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestCoverageReports
+        path: |
+          TestProject/TestResults/**/*.xml
+          TestProject/TestResults/Report/index.html
+
+    # 11. Завантаження .trx звітів як артефактів
+    - name: Upload trx test reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestResultsTrx
+        path: |
+          TestProject/TestResults/**/*.trx
