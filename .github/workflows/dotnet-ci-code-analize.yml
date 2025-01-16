@@ -3,10 +3,10 @@ name: .NET CI Pipeline CodeAnalizeReport
 on:
   push:
     branches:
-      - master2 #Прибрати 2
+      - master
   pull_request:
     branches:
-      - master2 #Прибрати 2
+      - master
 
 jobs:
   build-and-test:
