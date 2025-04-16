@@ -1,4 +1,4 @@
-name: .NET CI Pipeline TestReport
+name: TestReport .NET CI Pipeline 
 
 on:
   push:
