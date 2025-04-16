@@ -55,7 +55,7 @@ jobs:
 
     # 10. Завантаження звітів як артефактів
     - name: Upload coverage and test reports
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TestCoverageReports
         path: |
@@ -64,7 +64,7 @@ jobs:
 
     # 11. Завантаження .trx звітів як артефактів
     - name: Upload trx test reports
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TestResultsTrx
         path: |
