@@ -101,5 +101,10 @@
             return a * b * h;
         }
         #endregion
+
+        void Test()
+        {
+            return;
+        }
     }
 }
